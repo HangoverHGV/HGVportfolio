@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>PDF Converter</title>
+    </head>
+<body>
+    <br><br><br><br><br><br>
+    <div class="container-xxl py-5">
+        <div class="container">
+    <div class="row g-0">
+        <div class="col-lg-6 wow fadeIn" data-wow-delay="0.1s">
+            <div class="bg-secondary p-5">
+    
+                <h1 class="text-uppercase mb-4">PDF Online Converter</h1>
+                <label for="name">Select a file</label>
+                <form action="/pdfconvert" method="post" enctype="multipart/form-data">
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <div class="form-floating">
+                                <input type="file" class="form-control bg-transparent" id="subject" accept=".pdf" name="pdf">                     
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <button class="btn btn-primary w-100 py-3" type="submit">Convert</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+</body>
+</html>
+{% endblock %}
+
+

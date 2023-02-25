@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Calculator Cubaj</title>
+
+    </head>
+    <body>
+        <div class="container-xxl py-5">
+            <div class="container">
+                <div class="row g-0">
+                    <div class="col-lg-6 wow fadeIn" data-wow-delay="0.1s">
+                        <div class="bg-secondary p-5">
+                            <form action="/calculatorcubaj" method="post">
+                                <div class="row g-3">
+                                    <div class="col-12">
+                                        <div class="form-floating">
+                                            <input type="text" class="form-control bg-transparent" id="name" placeholder="Lenght" autocomplete="off" name="lungime">
+                                            <label for="name">Lenght[m]</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="form-floating">
+                                            <input type="text" class="form-control bg-transparent" id="email" placeholder="Diameter" autocomplete="off" name="diametru">
+                                            <label for="email">Diameter[cm]</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <button class="btn btn-primary w-100 py-3" type="submit">Calculate</button>
+                                    </div>
+                                </div>
+                            </form>
+                            <h3 class="text-uppercase mb-0">{{ volum }}</h3>
+                            <h1 for="total", class="text-uppercase text-primary mb-3">Total: {{ total }}</h1>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <table class="table table-striped table-dark">
+            <thead>
+            <tr>
+                <th scope="col">Index</th>
+                <th scope="col">Lenght[m]</th>
+                <th scope="col">Diameter[cm]</th>
+                <th scope="col">Volume</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for r in user.calculator %}
+                <tr>
+                    <th scope="row"><a href="/delete/{{ r.id }}">{{ loop.index }}</a></td>
+                    <td><a href="/delete/{{ r.id }}">{{ r.lungime }}</a></td>
+                    <td><a href="/delete/{{ r.id }}">{{ r.diametru }}</a></td>
+                    <td><a href="/delete/{{ r.id }}">{{ r.volumul }}</a></td>
+                </tr>
+
+            {% endfor %}
+        </tbody>
+        </table>
+    </body>
+    {% if context %}
+    <script>
+        window.onload = function() {
+            alert('{{ context['message'] }}');
+        };
+    </script>
+    {% endif %}
+</html>
+{% endblock %}

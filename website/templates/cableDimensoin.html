@@ -1,0 +1,183 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Cable Calculator</title>
+
+    </head>
+    <body>
+        <div class="container-xxl py-5">
+            <div class="container">
+                <div class="row g-0">
+                    <div class="col-lg-6 wow fadeIn" data-wow-delay="0.1s">
+                        <div class="bg-secondary p-5">
+                            <form action="/cable_dimension" method="post">
+                                <div class="row g-3">
+                                    <div class="col-12">
+                                        <div class="form-floating">
+                                            <select class="form-select bg-dark text-white" id="select_type" name="normativ" onchange="sendData()" ontouchend="sendData()" required>
+                                                <option value="">Norms</option>
+                                                <option id="el" value="electrica">NTE 007</option>
+                                                <option id="anre" value="anrei7">ANRE I7</option>
+                                            </select>
+                                            <label for="name">Norms</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="form-floating">
+                                            <select class="form-select bg-dark text-white" name="pozare" id="pozare" required>
+                                                <option value="">Route Type</option>
+                                                <option class="electrica" value="subteran">Underground</option>
+                                                <option class="electrica" value="aerian">In air</option>
+                                                <option class="anrei7" value="subteran_tub">Underground in tube</option>
+                                                <option class="anrei7" value="aerian_tub">In air and in tube</option>
+                                                <option class="anrei7" value="aerian_notub">In air</option>
+                                            </select>
+                                            <label for="name">Route Type</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="form-floating">
+                                            <select class="form-select bg-dark text-white" name="tip_material">
+                                                <option id="sel1" value="al" selected>Aluminium</option>
+                                                <option id="sel1" value="cu">Copper</option>
+                                            </select>
+                                            <label for="name">Material</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="form-floating">
+                                            <select class="form-select bg-dark text-white" name="tip" id="selectedType" onchange="updateNormativ()" ontouchen="updateNormativ()">
+                                                <option id="sel1" value="trifazic" selected>Three phase</option>
+                                                <option id="sel1" value="monofazic">One phase</option>
+                                            </select>
+                                            <label for="name">Type</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="form-floating">
+                                            <input type="text" class="form-control bg-transparent" id="name" placeholder="Puterre[kW]" autocomplete="off" name="putere" required>
+                                            <label for="name">Power[kW]</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="form-floating">
+                                            <input type="text" class="form-control bg-transparent" id="name" placeholder="Puterre[kW]" autocomplete="off" name="lungime" required>
+                                            <label for="name">Lenght[m]</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <button class="btn btn-primary w-100 py-3" type="submit">Calculeaza</button>
+                                    </div>
+                                </div>
+                            </form>
+                            {% if red and not red_P %}
+                            <h3 class="text-uppercase mb-0" name="curent">I[A]: {{ curent }}</h3>
+                            <h3 class="text-uppercase mb-0" name="du">&Delta;U[V]: {{ du }}</h3>
+                            <h3 class="text-uppercase mb-0" style="color:red" name="du">&Delta;U[%]: {{ dup }}</h3>
+                            <h3 class="text-uppercase mb-0" name="dp">&Delta;P[kW]: {{ dp }}</h3>
+                            <h3 class="text-uppercase mb-0" style="color:red" name="sectiunea">Conductor diameter: {{ s }}</h3>
+                            <h3 class="text-uppercase mb-0" name="protectie">Protection[A]: {{ sig }}</h3>
+                            {% elif red_P and red %}
+                            <h3 class="text-uppercase mb-0" name="curent">I[A]: {{ curent }}</h3>
+                            <h3 class="text-uppercase mb-0" name="du">&Delta;U[V]: {{ du }}</h3>
+                            <h3 class="text-uppercase mb-0" style="color:red" name="du">&Delta;U[%]: {{ dup }}</h3>
+                            <h3 class="text-uppercase mb-0" name="dp">&Delta;P[kW]: {{ dp }}</h3>
+                            <h3 class="text-uppercase mb-0" style="color:red" name="sectiunea">Conductor diameter: {{ s }}</h3>
+                            <h3 class="text-uppercase mb-0" style="color:red" name="protectie">Protection[A]: {{ sig }}</h3>
+                            {% elif not red and not red_P %}
+                            <h3 class="text-uppercase mb-0" name="curent">I[A]: {{ curent }}</h3>
+                            <h3 class="text-uppercase mb-0" name="du">&Delta;U[V]: {{ du }}</h3>
+                            <h3 class="text-uppercase mb-0" name="du">&Delta;U[%]: {{ dup }}</h3>
+                            <h3 class="text-uppercase mb-0" name="dp">&Delta;P[kW]: {{ dp }}</h3>
+                            <h3 class="text-uppercase mb-0" name="sectiunea">Conductor diameter: {{ s }}</h3>
+                            <h3 class="text-uppercase mb-0" name="protectie">Protection[A]: {{ sig }}</h3>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="col-lg-6 wow fadeIn">
+                        <div class="form-floating">
+                            <h3 class="text-uppercase text-primary mb-3" name="curent">Input:</h3>
+                            <h3 class="text-uppercase mb-0"" name="curent">P[kW]: {{ putere }}</h3>
+                            <h3 class="text-uppercase mb-0"" name="du">L[m]: {{ lungime }}</h3>
+                            <h3 class="text-uppercase mb-0"" name="dp">Normative: {{ normativ }}</h3>
+                            <h3 class="text-uppercase mb-0"" name="sectiunea">Route Type: {{ pozare }}</h3>
+                            <h3 class="text-uppercase mb-0"" name="sectiunea">Material: {{ tip_material }}</h3>
+                            <h3 class="text-uppercase mb-0"" name="protectie">Type: {{ tip }}</h3>
+                        </div>
+                </div>
+            </div>
+        </div>
+    </body>
+    
+</html>
+<script>
+    function sendData(){
+        var selectValue = document.getElementById("select_type").value;
+        //var data = { select_field: selectValue };
+        var options1 = document.getElementsByClassName("electrica");
+        var options2 = document.getElementsByClassName("anrei7");
+
+        
+
+        /*fetch('/cable_dimension', {
+            method: 'POST',
+            body: JSON.stringify(data),
+            headers: { 'Content-Type': 'application/json' }
+        });*/
+        if (selectValue == "electrica"){
+            for(var i = 0; i < options1.length; i++){
+                options1[i].style.display = 'block';
+                options1[i].selected = 'selected';
+            }
+            for(var i = 0; i < options2.length; i++){
+                options2[i].style.display = 'none';
+            }
+        }
+        else if (selectValue == "anrei7"){
+            for(var i = 0; i < options1.length; i++){
+                options1[i].style.display = 'none';
+            }
+            for(var i = 0; i < options2.length; i++){
+                options2[i].style.display = 'block';
+                options2[i].selected = 'selected';
+            }
+        }
+    }
+    function updateNormativ(){
+        var selectedType = document.getElementById("selectedType").value;
+        var options1 = document.getElementsByClassName("electrica");
+        var options2 = document.getElementsByClassName("anrei7");
+        var el = document.getElementById("el");
+        var anre = document.getElementById("anre");
+
+        if (selectedType == "monofazic"){
+            anre.style.display = "block";
+            el.style.display = "none";
+            anre.selected = "selected";
+            for(var i = 0; i < options1.length; i++){
+                options1[i].style.display = 'none';
+            }
+            for(var i = 0; i < options2.length; i++){
+                options2[i].style.display = 'block';
+                options2[i].selected = 'selected';
+            }
+        }
+        else if(selectedType == "trifazic"){
+            anre.style.display = "block";
+            el.style.display = "block";
+            el.selected = "selected";
+            for(var i = 0; i < options1.length; i++){
+                options1[i].style.display = 'block';
+                options1[i].selected = 'selected';
+            }
+            for(var i = 0; i < options2.length; i++){
+                options2[i].style.display = 'none';
+            }
+        }
+    }
+</script>
+{% endblock %}
+

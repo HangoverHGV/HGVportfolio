@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Log in</title>
+  </head>
+  <body>
+    <br><br><br>
+  <div class="container-xxl py-5">
+    <div class="container">
+  <div class="row g-0">
+    <div class="col-lg-6 wow fadeIn" data-wow-delay="0.1s">
+        <div class="bg-secondary p-5">
+            <form method="post">
+                <div class="row g-3">
+                    <div class="col-12">
+                        <div class="form-floating">
+                            <input type="email" class="form-control bg-transparent" id="email" placeholder="Your Email" name="username">
+                            <label for="email">Email</label>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="form-floating">
+                            <input type="password" class="form-control bg-transparent" id="subject" placeholder="password" name="password">
+                            <label for="subject">Password</label>
+                        </div>
+                    <div class="col-12">
+                        <button class="btn btn-primary w-100 py-3" type="submit">Log in</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+      </div>
+    </div>
+    </div>
+  </body>
+{% if context %}
+    <script>
+        window.onload = function() {
+            alert('{{ context['message'] }}');
+        };
+    </script>
+{% endif %}
+</html>
+{% endblock %}

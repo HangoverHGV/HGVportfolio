@@ -1,0 +1,3 @@
+Please click the following link to verify your email address:
+
+{{ url_for('auth.verify_email', token=token, _external=True) }}

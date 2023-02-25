@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>YouTube Downloader</title>
+  </head>
+  <body>
+    <div class="container-xxl py-5">
+      <div class="container">
+          <div class="row g-0">
+              <div class="col-lg-6 wow fadeIn" data-wow-delay="0.1s">
+                  <div class="bg-secondary p-5">
+                      <h1 class="text-uppercase mb-4">YouTube Downloader</h1>
+                      <form action="/ytdownloader/download" method="post" enctype="multipart/form-data">
+                        <label for="name">Paste the link here:</label>
+                          <div class="row g-3">
+                              <div class="col-12">
+                                  <div class="form-floating">
+                                      <input type="text" class="form-control bg-transparent" id="name" placeholder="Youtube Link" name="link" autocomplete="off">
+                                  </div>
+                              </div>
+                              <div class="col-12">
+                                  <button class="btn btn-primary w-100 py-3" type="submit">Convert</button>
+                              </div>
+                          </div>
+                      </form>
+                  </div>
+              </div>
+          </div>
+      </div>
+    </div>
+  </body>
+</html>
+
+{% endblock %}

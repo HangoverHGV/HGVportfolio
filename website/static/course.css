@@ -1,0 +1,13 @@
+.image{
+    position: absolute;
+    top: 20%;
+    left: 15%;
+}
+
+
+
+img{
+    padding: 3%;
+    width: 350;
+    height: 250;
+}
