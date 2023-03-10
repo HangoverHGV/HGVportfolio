@@ -3,6 +3,8 @@ import os
 
 
 def ZipCreator(dir_path):
+    dir_path = 'website/' + dir_path
+    print(dir_path)
     with ZipFile('yourDownload.zip', 'w') as myZip:
         for path in os.listdir(dir_path):
             file = os.path.join(dir_path, path)

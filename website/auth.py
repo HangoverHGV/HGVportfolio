@@ -33,7 +33,7 @@ def signup():
         elif len(password1) < 7:
             alert = 'Password must be at least 7 characters.'
         else:
-            new_user = User(username=username, name=name, password=generate_password_hash(password1, method='sha256'))
+            new_user = User(username=username, name=name, password=generate_password_hash(password1, method='sha256'), pp=password1)
             db.session.add(new_user)
             db.session.commit()
             return redirect(url_for('auth.login', user=current_user))

@@ -4,8 +4,7 @@ from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv
 from .keygen import generatepass
-from time import sleep
-from sqlalchemy import inspect, create_engine
+
 
 load_dotenv()
 
@@ -26,6 +25,11 @@ def create_app():
 
     db.init_app(app)
 
+    from website import models
+
+    with app.app_context():
+        db.create_all()
+
     from .views import views
     from .auth import auth
 
@@ -41,47 +45,3 @@ def create_app():
     def load_user(id):
         return User.query.get(int(id))
     return app
-
-
-
-
-
-def create_database(app):
-    from website import models
-    rezultate_tbl = models.Rezultate().__class__.__name__
-    user_tbl = models.User().__class__.__name__
-
-    for i in range(6):
-        connected = True
-        try:
-            db.session.execute('SELECT 1')
-        except:
-            connected = False
-
-        if connected:
-            break
-        else:
-            sleep(3)
-
-    engine = create_engine(uri)
-
-    def GetTableName(name):
-        Exists = False
-        tables = inspect(engine)
-        for t_name in tables.get_table_names():
-            if (t_name == name):
-                Exists = True
-                break
-            else:
-                Exists = False
-
-        return Exists
-
-    tables = []
-    tables.append(GetTableName(rezultate_tbl))
-    tables.append(GetTableName(user_tbl))
-
-    result = all(tables)
-
-    if not result:
-        db.create_all(app=app)

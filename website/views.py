@@ -7,6 +7,7 @@ from .convertpdf import CreateAndDelete, convert_pdf2docx
 from .ytdownloader import SongDownload, PlaylistDownload
 from . import dimension_i7
 from . import dimension_electrica
+from .API_app import *
 
 views = Blueprint('views', __name__)
 
@@ -74,10 +75,10 @@ def delete(id):
 @views.route('/pdfconvert', methods = ['GET', 'POST'])
 def pdfconvert():
     if request.method == 'POST':
-        dir_path = r'files'
+        dir_path = 'website/files'
         CreateAndDelete(dir_path)
 
-        savePath = 'files/'
+        savePath = 'website/files/'
 
         file = request.files['pdf']
         if not file:
@@ -196,4 +197,56 @@ def CableDimension():
                 break
 
     return render_template('cableDimensoin.html', user=current_user, curent=curent, dup=DUp, du=DU, dp=DP, s=sectiunea, sig=siguranta, red=red, red_P=red_P, pozare=pozare_D, tip_material=tip_material_D, tip=tip_D, putere=putere_D, lungime=lungime_D, normativ=normativ)
+
+# Oberplan_API
+
+form_year = 0
+form_month = 0
+form_type = ''
+@views.route('/oberplanAPI', methods=['GET', 'POST'])
+@login_required
+def ober_dashboard():
+    global form_year, form_month, form_type
+    if request.method == 'POST':
+        form_year = request.form.get('year')
+        form_month = request.form.get('month')
+        form_type = request.form.get('type')
+
+        return redirect(url_for('views.schedules'))
+    return render_template('dashboard_ober.html', user=current_user)
+
+@views.route('/oberplanAPI/schedules', methods=['GET', 'POST'])
+@login_required
+def schedules():
+    user_ober = User.query.filter_by(username=current_user.username).first()
+
+    schedules = Schedules(current_user.username, user_ober.pp)
+    sch_name = []
+
+    for s in schedules:
+        sch_name.append(s['name'])
+        o_plan = OberplanSch(sch_id=s['id'], sch_name=s['name'], user_id=user_ober.id)
+        db.session.add(o_plan)
+        db.session.commit()
+
+    return render_template('report.html', user=current_user, sch_list=sch_name)
+
+
+@views.route('/oberplanAPI/schedules/<string:name>', methods=['GET', 'POST'])
+def get_rep(name):
+    user_ober = User.query.filter_by(username=current_user.username).first()
+    tbl = OberplanSch.query.filter_by(sch_name=name).first()
+    schedule_id = tbl.sch_id
+    if form_type == 'rep':
+        reports(schedule_id, current_user.username, user_ober.pp, int(form_year), int(form_month))
+        zip_file = export('Report', 'Pontaj')
+        return send_file(zip_file)
+    if form_type == 'co':
+        co_generator(schedule_id, current_user.username, user_ober.pp, int(form_month))
+        zip_file = export('PDF', 'Cereri Concediu')
+        return send_file(zip_file)
+
+    return redirect(url_for('views.schedules'))
+
+
 
