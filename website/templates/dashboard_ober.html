@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+
+<div class="container-xxl py-5">
+            <div class="container">
+                <div class="row g-0">
+                    <div class="col-lg-6 wow fadeIn" data-wow-delay="0.1s">
+                        <div class="bg-secondary p-5">
+                            <form action="/oberplanAPI" method="post">
+                                <div class="row g-3">
+                                    <div class="col-12">
+                                        <div class="form-floating">
+                                            <select class="form-select bg-dark text-white" name="type">
+                                                <option id="sel1" value="rep" selected>Raport</option>
+                                                <option id="sel1" value="co">Cereri Concediu</option>
+                                            </select>
+                                            <label for="month">Type</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="form-floating">
+                                            <select class="form-select bg-dark text-white" name="year" id="date-dropdown">
+                                            </select>
+                                            <label for="year">Year</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="form-floating">
+                                            <select class="form-select bg-dark text-white" name="month" id="month-dropdown">
+                                            </select>
+                                            <label for="month">Month</label>
+                                        </div>
+                                    </div>
+                                    </div>
+                                    <br>
+                                    <div class="col-12">
+                                        <button class="btn btn-primary w-100 py-3" type="submit">Genereaza</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+</div>
+</div>
+</div>
+<script>
+let dateDropdown = document.getElementById('date-dropdown');
+let monthDropdown = document.getElementById('month-dropdown');
+  let currentYear = new Date().getFullYear();
+  let earliestYear = 1970;
+  while (currentYear >= earliestYear) {
+    let dateOption = document.createElement('option');
+    dateOption.text = currentYear;
+    dateOption.value = currentYear;
+    dateDropdown.add(dateOption);
+    currentYear -= 1;
+  }
+  for (i=1; i<=12; i++){
+    let monthOption = document.createElement('option');
+    monthOption.text = i;
+    monthOption.value = i;
+    monthDropdown.add(monthOption);
+  }
+</script>
+
+{% endblock %}
