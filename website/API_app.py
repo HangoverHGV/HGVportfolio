@@ -7,10 +7,11 @@ import pandas as pd
 import calendar
 import jinja2
 import shutil
+import string
 
 #  For WINDOWS
-# path_wkhtmltopdf = r'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe'
-# config = pdfkit.configuration(wkhtmltopdf=path_wkhtmltopdf)
+path_wkhtmltopdf = r'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe'
+config = pdfkit.configuration(wkhtmltopdf=path_wkhtmltopdf)
 
 class Connect:
     def __init__(self, url, user, password):
@@ -88,10 +89,11 @@ def reports(schedules, user, password, year, month):
         if 'z.' not in e['name']:
             i = 0
             for p in programari:
+                s = p['title'].lower()
+                s = s.translate(({ord(c): None for c in string.whitespace}))
                 if e['id'] == p['resource_id']:
-                    if p['title'] not in cost_center and p['title'].lower() != 'zi libera' and p[
-                        'title'].lower() != 'zile ev' and p['title'].lower() != 'nu' \
-                            and p['title'].lower() != 'co' and p['title'].lower() != 'co  cote' and p['title'].lower() != 'cote':
+                    if p['title'] not in cost_center and s != 'zilibera' and s != 'zileev' and s != 'nu' \
+                            and s != 'co' and s != 'cocote':
                         cost_center.append(p['title'])
 
             df = pd.DataFrame(columns=days, index=cost_center)
@@ -130,27 +132,30 @@ def co_generator(schedules, user, password, month):
             for p in programari:
                 date_formatting = string_to_date.remaining_days(p['start'], p['end'])
                 if date_formatting['start_month'] == month:
-                    if e['id'] == p['resource_id'] and 'co' in p['title'].lower() and p['title'].lower() != 'COTE'.lower():
-                        days = date_formatting['delta_days'] + 1
-                        folder_date = date_formatting['folder_name']
-                        context = {
-                            'name': e['name'],
-                            'start': date_formatting['start_date'],
-                            'end': date_formatting['end_date'],
-                            'total': str(days)
-                        }
-                        folder_name = f'{folder_date}'
-                        create_folder(f'HTML/{folder_name}')
-                        create_folder(f'PDF/{folder_name}')
+                    if e['id'] == p['resource_id']:
+                        s = p['title'].lower()
+                        s = s.translate(({ord(c): None for c in string.whitespace}))
+                        if s == 'co' or s == 'cocote':
+                            days = date_formatting['delta_days'] + 1
+                            folder_date = date_formatting['folder_name']
+                            context = {
+                                'name': e['name'],
+                                'start': date_formatting['start_date'],
+                                'end': date_formatting['end_date'],
+                                'total': str(days)
+                            }
+                            folder_name = f'{folder_date}'
+                            create_folder(f'HTML/{folder_name}')
+                            create_folder(f'PDF/{folder_name}')
 
-                        html = template.render(context)
-                        html_name = f"website/HTML/{folder_name}/{e['name']}_{folder_date}.html"
-                        with open(html_name, 'w') as f:
-                            f.write(html)
+                            html = template.render(context)
+                            html_name = f"website/HTML/{folder_name}/{e['name']}_{folder_date}.html"
+                            with open(html_name, 'w') as f:
+                                f.write(html)
 
-                        pdf_name = f"website/PDF/{folder_name}/{e['name']}_{folder_date}.pdf"
-                        # pdfkit.from_file(html_name, pdf_name, configuration=config) # For WINDOWS
-                        pdfkit.from_file(html_name, pdf_name)
+                            pdf_name = f"website/PDF/{folder_name}/{e['name']}_{folder_date}.pdf"
+                            pdfkit.from_file(html_name, pdf_name, configuration=config)  # For WINDOWS
+                            # pdfkit.from_file(html_name, pdf_name)
 
 
 
